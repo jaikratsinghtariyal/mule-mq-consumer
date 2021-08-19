@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ibm-mq http://www.mulesoft.org/schema/mule/ibm-mq/current/mule-ibm-mq.xsd">
+	
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8220a3ed-784f-459a-adb0-593678ede1b6">
+		<http:listener-connection host="0.0.0.0" port="8088" />
+	</http:listener-config>
+	
+	<ibm-mq:config name="IBM_MQ_Config" doc:name="IBM MQ Config" doc:id="38f07ee6-7d37-467a-b8d9-5a3188ca19b9" >
+		<ibm-mq:connection username="admin" password="passw0rd" >
+			<ibm-mq:connection-mode >
+				<ibm-mq:client host="0.0.0.0" queueManager="QM1" channel="DEV.ADMIN.SVRCONN" port="1414"/>
+			</ibm-mq:connection-mode>
+		</ibm-mq:connection>
+	</ibm-mq:config>
+	
+	<flow name="mule-mq-consumerFlow" doc:id="2fa80af9-0fc6-41e9-b9d7-feffeda17832" >
+		<http:listener doc:name="Listener" doc:id="344d2f38-73ba-4b91-9ea2-4235b4a5deaf" config-ref="HTTP_Listener_config" path="/consume" allowedMethods="GET"/>
+		<ibm-mq:consume doc:name="Consume" doc:id="1c04e221-04da-4072-b0c0-c36c974c7473" config-ref="IBM_MQ_Config" destination="DEV.QUEUE.1"/>
+	</flow>
+</mule>
